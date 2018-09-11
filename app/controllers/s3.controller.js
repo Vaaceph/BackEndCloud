@@ -1,0 +1,109 @@
+const s3 = require('../config/s3.config.js');
+const env = require('../config/s3.env.js');
+const mysql = require('mysql');
+
+const connection = mysql.createConnection({
+	host: 'mydb.czgpm4nqulz8.us-west-2.rds.amazonaws.com',
+	port: '3306',
+	user: 'wasifkhan',
+	password: 'Fulda123!',
+	database: 'saed'
+});
+
+exports.doUpload = (req, res) => {
+	const params = {
+		Bucket: env.Bucket,
+		Key: req.file.originalname,
+		Body: req.file.buffer
+	}
+
+	s3.upload(params, (err, data) => {
+		if (err) {
+			res.status(500).send("Error -> " + err);
+			return;
+		}
+
+		var filePath = data.Location; 
+		var fileName = req.file.originalname;
+		var userId = req.body.UserId;
+		var fileAlreadyExists = false;
+
+		if(!connection._connectCalled ) {
+			connection.connect();
+		}
+		connection.query("SELECT * FROM saed.files where UserId = '" + userId + "';", (err, rows, fields) => {
+			rows.forEach(row => {
+				if(row.FileName == fileName) {
+					fileAlreadyExists = true;
+				}
+			});
+
+			if(!fileAlreadyExists){
+				connection.query("INSERT INTO files (FileName, FilePath, UserId) VALUES ('" + fileName + "', '" + filePath + "', '" + userId + "');",
+				(err, rows, fields) => {
+					if (err) throw err
+				});
+			}
+			
+			// connection.end();
+			res.send("File uploaded successfully! -> keyname = " + req.file.originalname);
+			 
+		});
+	});
+}
+
+exports.listKeyNames = (req, res) => {
+	const params = {
+		Bucket: env.Bucket
+	}
+
+	var keys = [];
+	var databaseRows = [];
+	var userId = req.query.userid;
+
+	if(!connection._connectCalled ) {
+		connection.connect();
+	}
+
+	connection.query("SELECT * FROM saed.files where UserId = '" + userId + "';",
+	(err, rows, fields) => {
+		if (err) throw err
+			rows.forEach(row => {
+				if(row.UserId == userId) {
+					databaseRows.push(row.FileName);
+				} 
+			})
+			
+		// connection.end();
+		res.send(databaseRows);
+	});
+	
+	// s3.listObjectsV2(params, (err, data) => {
+	// 	if (err) {
+	// 		console.log(err, err.stack); // an error occurred
+	// 		res.send("error -> " + err);
+	// 	} else {
+			
+	// 		var contents = data.Contents;
+	// 		contents.forEach(function (content) {
+	// 			keys.push(content.Key);
+	// 		});
+	// 		res.send(databaseRows);
+	// 	}
+	// });
+}
+
+exports.doDownload = (req, res) => {
+	const params = {
+		Bucket: env.Bucket,
+		Key: req.params.filename
+	}
+
+	res.setHeader('Content-Disposition', 'attachment');
+
+	s3.getObject(params)
+		.createReadStream()
+		.on('error', function (err) {
+			res.status(500).json({ error: "Error -> " + err });
+		}).pipe(res);
+}
