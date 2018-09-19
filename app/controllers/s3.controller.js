@@ -32,7 +32,7 @@ exports.doUpload = (req, res) => {
 			connection.connect();
 		}
 		connection.query("SELECT * FROM saed.files where UserId = '" + userId + "';", (err, rows, fields) => {
-			rows.forEach(row => {
+			rows && rows.forEach(row => {
 				if(row.FileName == fileName) {
 					fileAlreadyExists = true;
 				}
@@ -68,7 +68,7 @@ exports.listKeyNames = (req, res) => {
 	connection.query("SELECT * FROM saed.files where UserId = '" + userId + "';",
 	(err, rows, fields) => {
 		if (err) throw err
-			rows.forEach(row => {
+			rows && rows.forEach(row => {
 				if(row.UserId == userId) {
 					databaseRows.push(row.FileName);
 				} 
