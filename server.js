@@ -3,7 +3,7 @@ const app = express();
 
 const cors = require('cors')
 const corsOptions = {
-  origin: 'http://localhost:4200',
+  origin: ['http://localhost:4200', 'my-balancer-1996715571.us-west-2.elb.amazonaws.com:8080'],
   optionsSuccessStatus: 200
 }
 app.use(cors(corsOptions))
