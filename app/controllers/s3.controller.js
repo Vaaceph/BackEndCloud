@@ -43,11 +43,9 @@ exports.doUpload = (req, res) => {
 				(err, rows, fields) => {
 					if (err) throw err
 				});
+				res.send("File uploaded successfully! -> keyname = " + req.file.originalname);
 			}
-			
 			// connection.end();
-			res.send("File uploaded successfully! -> keyname = " + req.file.originalname);
-			 
 		});
 	});
 }
