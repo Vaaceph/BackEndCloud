@@ -1,6 +1,7 @@
 const s3 = require('../config/s3.config.js');
 const mysql = require('mysql');
 const AWS = require('aws-sdk');
+const s3Bucket = 'saed-files';
 
 const connection = mysql.createConnection({
 	host: 'saed.czgpm4nqulz8.us-west-2.rds.amazonaws.com',
@@ -12,11 +13,9 @@ const connection = mysql.createConnection({
 
 exports.doUpload = (req, res) => {
 	console.log("***** process.env: ", process.env);
-	console.log("***** process.env.AWS_ACCESS_ID: ", process.env.AWS_ACCESS_ID);
- 	console.log("***** process.env.AWS_SECRET_ACCESS_KEY: ", process.env.AWS_SECRET_ACCESS_KEY);
 	console.log(s3);
 	const params = {
-		Bucket: s3.bucket,
+		Bucket: s3Bucket,
 		Key: req.file.originalname,
 		Body: req.file.buffer
 	}
@@ -63,7 +62,7 @@ exports.doUpload = (req, res) => {
 
 exports.listKeyNames = (req, res) => {
 	const params = {
-		Bucket:  s3.bucket
+		Bucket:  s3Bucket
 	}
 
 	var keys = [];
@@ -104,7 +103,7 @@ exports.listKeyNames = (req, res) => {
 
 exports.doDownload = (req, res) => {
 	const params = {
-		Bucket:  s3.bucket,
+		Bucket:  s3Bucket,
 		Key: req.params.filename
 	}
 
