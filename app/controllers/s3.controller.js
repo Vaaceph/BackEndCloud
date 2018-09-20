@@ -3,7 +3,7 @@ const env = require('../config/s3.env.js');
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
-	host: 'mydb.czgpm4nqulz8.us-west-2.rds.amazonaws.com',
+	host: 'saed.czgpm4nqulz8.us-west-2.rds.amazonaws.com',
 	port: '3306',
 	user: 'wasifkhan',
 	password: 'Fulda123!',
@@ -42,8 +42,8 @@ exports.doUpload = (req, res) => {
 				connection.query("INSERT INTO saed.userfiles (FileName, FilePath, UserId) VALUES ('" + fileName + "', '" + filePath + "', '" + userId + "');",
 				(err, rows, fields) => {
 					if (err) throw err
+					res.send("File uploaded successfully! -> keyname = " + req.file.originalname);
 				});
-				res.send("File uploaded successfully! -> keyname = " + req.file.originalname);
 			}
 			// connection.end();
 		});
