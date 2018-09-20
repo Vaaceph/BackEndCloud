@@ -68,7 +68,7 @@ exports.doUpload = (req, res) => {
 
 exports.listKeyNames = (req, res) => {
 	const params = {
-		Bucket: env.Bucket
+		Bucket:  s3.bucket
 	}
 
 	var keys = [];
@@ -109,7 +109,7 @@ exports.listKeyNames = (req, res) => {
 
 exports.doDownload = (req, res) => {
 	const params = {
-		Bucket: env.Bucket,
+		Bucket:  s3.bucket,
 		Key: req.params.filename
 	}
 
