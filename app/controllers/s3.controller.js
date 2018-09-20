@@ -31,7 +31,7 @@ exports.doUpload = (req, res) => {
 		if(!connection._connectCalled ) {
 			connection.connect();
 		}
-		connection.query("SELECT * FROM saed.files where UserId = '" + userId + "';", (err, rows, fields) => {
+		connection.query("SELECT * FROM saed.userfiles where UserId = '" + userId + "';", (err, rows, fields) => {
 			rows && rows.forEach(row => {
 				if(row.FileName == fileName) {
 					fileAlreadyExists = true;
@@ -39,7 +39,7 @@ exports.doUpload = (req, res) => {
 			});
 
 			if(!fileAlreadyExists){
-				connection.query("INSERT INTO files (FileName, FilePath, UserId) VALUES ('" + fileName + "', '" + filePath + "', '" + userId + "');",
+				connection.query("INSERT INTO saed.userfiles (FileName, FilePath, UserId) VALUES ('" + fileName + "', '" + filePath + "', '" + userId + "');",
 				(err, rows, fields) => {
 					if (err) throw err
 				});
@@ -65,7 +65,7 @@ exports.listKeyNames = (req, res) => {
 		connection.connect();
 	}
 
-	connection.query("SELECT * FROM saed.files where UserId = '" + userId + "';",
+	connection.query("SELECT * FROM saed.userfiles where UserId = '" + userId + "';",
 	(err, rows, fields) => {
 		if (err) throw err
 			rows && rows.forEach(row => {
