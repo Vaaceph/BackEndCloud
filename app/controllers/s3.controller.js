@@ -1,5 +1,4 @@
-//const s3 = require('../config/s3.config.js');
-const env = require('../config/s3.env.js');
+const s3 = require('../config/s3.config.js');
 const mysql = require('mysql');
 const AWS = require('aws-sdk');
 
@@ -12,17 +11,17 @@ const connection = mysql.createConnection({
 });
 
 exports.doUpload = (req, res) => {
-	 console.log("***** process.env: ", process.env);
-	 console.log("***** process.env.AWS_ACCESS_KEY_ID: ", process.env.AWS_ACCESS_KEY_ID);
- console.log("***** process.env.AWS_SECRET_ACCESS_KEY: ", process.env.AWS_SECRET_ACCESS_KEY);
+	console.log("***** process.env: ", process.env);
+	console.log("***** process.env.AWS_ACCESS_KEY_ID: ", process.env.AWS_ACCESS_KEY_ID);
+ 	console.log("***** process.env.AWS_SECRET_ACCESS_KEY: ", process.env.AWS_SECRET_ACCESS_KEY);
 	const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-	region : 'us-east-1'
-});
+		accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+		region : 'us-east-1'
+	});
 	console.log(s3);
 	const params = {
-		Bucket: env.Bucket,
+		Bucket: s3.bucket,
 		Key: req.file.originalname,
 		Body: req.file.buffer
 	}
