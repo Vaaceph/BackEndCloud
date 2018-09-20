@@ -3,10 +3,14 @@ const app = express();
 
 const cors = require('cors')
 const corsOptions = {
-  origin: ['http://localhost:4200', 'my-balancer-1996715571.us-west-2.elb.amazonaws.com:8080'],
+  origin: ['http://localhost:4200', 'my-balancer-1996715571.us-west-2.elb.amazonaws.com'],
   optionsSuccessStatus: 200
 }
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
+
+app.get('/', (req, res) => {
+  res.send('ok');
+});
  
 let router = require('./app/routers/s3.router.js');
 app.use('/', router);
