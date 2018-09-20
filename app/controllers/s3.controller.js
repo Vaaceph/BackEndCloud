@@ -32,20 +32,27 @@ exports.doUpload = (req, res) => {
 			connection.connect();
 		}
 		connection.query("SELECT * FROM saed.userfiles where UserId = '" + userId + "';", (err, rows, fields) => {
-			rows && rows.forEach(row => {
-				if(row.FileName == fileName) {
-					fileAlreadyExists = true;
-				}
-			});
+
+			if(err) {
+				res.status(400).send("Error -> " + err);
+			} else {
+				rows && rows.forEach(row => {
+					if(row.FileName == fileName) {
+						fileAlreadyExists = true;
+					}
+				});
+			}
 
 			if(!fileAlreadyExists){
 				connection.query("INSERT INTO saed.userfiles (FileName, FilePath, UserId) VALUES ('" + fileName + "', '" + filePath + "', '" + userId + "');",
 				(err, rows, fields) => {
-					if (err) throw err
-					res.send("File uploaded successfully! -> keyname = " + req.file.originalname);
+					if(err) {
+						res.status(400).send("Error -> " + err);
+					} else {
+						res.send("File uploaded successfully! -> keyname = " + req.file.originalname);
+					}
 				});
 			}
-			// connection.end();
 		});
 	});
 }
