@@ -1,6 +1,7 @@
 //const s3 = require('../config/s3.config.js');
 const env = require('../config/s3.env.js');
 const mysql = require('mysql');
+const AWS = require('aws-sdk');
 
 const connection = mysql.createConnection({
 	host: 'saed.czgpm4nqulz8.us-west-2.rds.amazonaws.com',
@@ -11,6 +12,7 @@ const connection = mysql.createConnection({
 });
 
 exports.doUpload = (req, res) => {
+	 console.log("***** process.env: ", process.env);
 	 console.log("***** process.env.AWS_ACCESS_KEY_ID: ", process.env.AWS_ACCESS_KEY_ID);
  console.log("***** process.env.AWS_SECRET_ACCESS_KEY: ", process.env.AWS_SECRET_ACCESS_KEY);
 	const s3 = new AWS.S3({
