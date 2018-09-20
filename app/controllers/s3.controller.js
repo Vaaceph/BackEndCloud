@@ -1,6 +1,7 @@
 //const s3 = require('../config/s3.config.js');
 const env = require('../config/s3.env.js');
 const mysql = require('mysql');
+const AWS = require('aws-sdk');
 
 const connection = mysql.createConnection({
 	host: 'saed.czgpm4nqulz8.us-west-2.rds.amazonaws.com',
