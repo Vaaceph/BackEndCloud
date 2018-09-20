@@ -11,6 +11,7 @@ const connection = mysql.createConnection({
 });
 
 exports.doUpload = (req, res) => {
+	console.log(s3);
 	const params = {
 		Bucket: env.Bucket,
 		Key: req.file.originalname,
