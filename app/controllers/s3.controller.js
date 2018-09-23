@@ -61,6 +61,7 @@ exports.doUpload = (req, res) => {
 }
 
 exports.listKeyNames = (req, res) => {
+	console.log("I am right here");
 	const params = {
 		Bucket:  s3Bucket
 	}
@@ -82,23 +83,9 @@ exports.listKeyNames = (req, res) => {
 				} 
 			})
 			
-		// connection.end();
 		res.send(databaseRows);
 	});
 	
-	// s3.listObjectsV2(params, (err, data) => {
-	// 	if (err) {
-	// 		console.log(err, err.stack); // an error occurred
-	// 		res.send("error -> " + err);
-	// 	} else {
-			
-	// 		var contents = data.Contents;
-	// 		contents.forEach(function (content) {
-	// 			keys.push(content.Key);
-	// 		});
-	// 		res.send(databaseRows);
-	// 	}
-	// });
 }
 
 exports.doDownload = (req, res) => {
@@ -114,4 +101,26 @@ exports.doDownload = (req, res) => {
 		.on('error', function (err) {
 			res.status(500).json({ error: "Error -> " + err });
 		}).pipe(res);
+}
+
+exports.filesCount = (req, res) => {
+
+	console.log("I am here!!");
+	const params = {
+		Bucket:  s3Bucket
+	}
+
+	var keys = [];
+	var databaseRows = [];
+	var userId = req.query.userid;
+
+	if(!connection._connectCalled ) {
+		connection.connect();
+	}
+
+	connection.query("SELECT * FROM saed.userfiles where UserId = '" + userId + "';",
+	(err, rows, fields) => {
+		if (err) throw err
+		res.send(rows.length.toString());
+	});
 }

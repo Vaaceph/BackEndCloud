@@ -9,6 +9,9 @@ router.post('/api/files/upload', upload.single("file"), awsWorker.doUpload);
 
 router.get('/api/files/all', awsWorker.listKeyNames);
 
+router.get('/api/files/count', awsWorker.filesCount);
+
 router.get('/api/files/:filename', awsWorker.doDownload);
+
  
 module.exports = router;
